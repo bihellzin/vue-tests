@@ -6,7 +6,7 @@ export const makeServer = ({ environment = 'development' } = {}) => {
     environment,
     routes() {
       this.namespace = 'api';
-      this.get('products', () => ({
+      this.get('/products', () => ({
         products,
       }));
     },
