@@ -7,7 +7,7 @@ describe('SearchBar - unit', () => {
     expect(wrapper).toBeDefined();
   });
 
-  it('should emit search event when user press Enter', async () => {
+  it('should emit search event when form is submitted', async () => {
     const wrapper = mount(SearchBar);
     const term = 'some text to search';
 
@@ -17,5 +17,18 @@ describe('SearchBar - unit', () => {
     expect(wrapper.emitted().doSearch).toBeTruthy();
     expect(wrapper.emitted().doSearch.length).toBe(1);
     expect(wrapper.emitted().doSearch[0]).toEqual([{ term }]);
+  });
+
+  it('should emit search event when search input is cleared', async () => {
+    const wrapper = mount(SearchBar);
+    const term = 'some text to search';
+    const input = wrapper.find('input[type="search"]');
+
+    await input.setValue(term);
+    await input.setValue('');
+
+    expect(wrapper.emitted().doSearch).toBeTruthy();
+    expect(wrapper.emitted().doSearch.length).toBe(1);
+    expect(wrapper.emitted().doSearch[0]).toEqual([{ term: '' }]);
   });
 });
