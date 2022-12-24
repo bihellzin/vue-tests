@@ -72,4 +72,34 @@ describe('ProductList - integration', () => {
 
     expect(wrapper.text()).toContain('Problemas ao carregar a lista!');
   });
+
+  it('should filter the product list when a search is performed', async () => {
+    const products = [
+      ...server.createList('product', 10),
+      server.create('product', {
+        title: 'Relogio da moda',
+      }),
+      server.create('product', {
+        title: 'Relogio da estacao',
+      }),
+    ];
+
+    axios.get.mockReturnValue(Promise.resolve({ data: { products } }));
+
+    const wrapper = mount(ProductList, {
+      mocks: {
+        $axios: axios,
+      },
+    });
+
+    await nextTick();
+
+    const search = wrapper.findComponent(SearchBar);
+    search.find('input[type="search"]').setValue('Relogio');
+
+    await search.find('form').trigger('submit');
+
+    expect(wrapper.vm.searchTerm).toEqual('Relogio');
+    expect(wrapper.findAllComponents(ProductCard)).toHaveLength(2);
+  });
 });
